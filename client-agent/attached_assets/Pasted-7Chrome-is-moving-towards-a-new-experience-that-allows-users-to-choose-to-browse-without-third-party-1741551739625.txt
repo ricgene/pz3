@@ -1,0 +1,52 @@
+7Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.Understand this warningAI
+stallwart.build.js:1 stallwart: failed ping 1
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'battery'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.Understand this warningAI
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.Understand this warningAI
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warningAI
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warningAI
+_app-9f9d20fa1022d10f.js:16 Invalid href 'https://a43b3f61-74c5-430d-b5ee-bd6de417df67-00-f3wjsc92cbt1.worf.replit.dev:3000//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-9f9d20fa1022d10f.js:16
+a.JZ.<computed> @ _app-9f9d20fa1022d10f.js:1
+d @ main-4a3e16fd43d8e74a.js:1
+(anonymous) @ _app-9f9d20fa1022d10f.js:4
+useMemo @ framework-6f65ab97e1173e83.js:1
+t.useMemo @ framework-6f65ab97e1173e83.js:1
+(anonymous) @ _app-9f9d20fa1022d10f.js:4
+ld @ framework-6f65ab97e1173e83.js:1
+ou @ framework-6f65ab97e1173e83.js:1
+i @ framework-6f65ab97e1173e83.js:1
+uI @ framework-6f65ab97e1173e83.js:1
+(anonymous) @ framework-6f65ab97e1173e83.js:1
+uM @ framework-6f65ab97e1173e83.js:1
+uS @ framework-6f65ab97e1173e83.js:1
+C @ framework-6f65ab97e1173e83.js:1
+z @ framework-6f65ab97e1173e83.js:1Understand this errorAI
+client:535 WebSocket connection to 'wss://a43b3f61-74c5-430d-b5ee-bd6de417df67-00-f3wjsc92cbt1.worf.replit.dev:3000/' failed: 
+t @ Network.js:227
+setupWebSocket @ client:535
+(anonymous) @ client:530Understand this errorAI
+Network.js:227 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/' is invalid.
+    at new t (Network.js:227:18)
+    at setupWebSocket (client:535:19)
+    at fallback (client:508:16)
+    at WebSocket.<anonymous> (client:551:7)
+t @ Network.js:227
+setupWebSocket @ client:535
+fallback @ client:508
+(anonymous) @ client:551Understand this errorAI
+Console.js:61 Initializing Firebase with project: prizmpoc
+Console.js:61 Firebase app initialized successfully
+Console.js:61 Firebase auth initialized
+Console.js:61 Firebase analytics initialized
+Console.js:61 Firebase auth persistence set to local
+Console.js:61 Firebase initialization complete

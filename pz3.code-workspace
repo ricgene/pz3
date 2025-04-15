@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "client-agent"
+		},
+		{
+			"path": "touch-user"
+		},
+		{
+			"path": "graph-agent"
+		},
+		{
+			"path": "server-agent"
+		}
+	],
+	"settings": {}
+}

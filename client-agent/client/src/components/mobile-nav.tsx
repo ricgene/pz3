@@ -1,0 +1,1 @@
+// This component has been deprecated. Navigation is now handled directly in layout.tsx
