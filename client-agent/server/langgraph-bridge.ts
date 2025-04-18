@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 
 // URL where your Python LangGraph service will be exposed
 //const LANGGRAPH_URL = process.env.LANGGRAPH_URL || 'http://localhost:8000/api/agent';
-/const LANGGRAPH_URL = 'http://127.0.0.1:2024'
+//const LANGGRAPH_URL = 'http://127.0.0.1:2024'
 // Update this constant to use your LangGraph URL
 const LANGGRAPH_URL = 'https://ht-untimely-hierarchy-43-ebc7d04a69c25cfbaa86079fae117b79.us.langgraph.app';
 
