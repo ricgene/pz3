@@ -1,4 +1,4 @@
-// client-agent/client/src/components/agent-chat-thread.tsx - Modified to use direct LangSmith connection
+// client-agent/client/src/components/agent-chat-thread.tsx
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Send, Mic, MicOff, VolumeX, Volume2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { logUserActivity } from "@/lib/activity-logger";
-import { sendAgentChatMessage } from "@/lib/langsmithClient"; // Import our new LangSmith client
+import { sendAgentChatMessage } from "@/lib/apiClient"; // Updated import
 import type { Message } from "@shared/schema";
 
 interface AgentChatThreadProps {
@@ -211,27 +211,27 @@ export function AgentChatThread({ userId }: AgentChatThreadProps) {
     }
   };
 
-  // Updated to use direct LangSmith connection
+  // Updated to use the server API endpoint
   const sendMessage = useMutation({
     mutationFn: async (content: string) => {
-      console.log("Sending message to LangSmith agent:", content);
+      console.log("Sending message to agent chat via server API:", content);
       
       // Log that user sent a message to the agent
       logUserActivity('agent_message_sent', { messageLength: content.length });
       
       try {
-        // Call LangSmith directly instead of going through API
+        // Call the server API
         return await sendAgentChatMessage(userId, content);
       } catch (error) {
-        console.error("Error sending message to LangSmith:", error);
+        console.error("Error sending message to API:", error);
         throw error;
       }
     },
     onSuccess: (result) => {
-      console.log("LangSmith response received:", result);
+      console.log("Server API response received:", result);
       
       if (!result || !result.userMessage || !result.assistantMessage) {
-        console.error("Invalid response format from LangSmith");
+        console.error("Invalid response format from server API");
         return;
       }
       
@@ -345,171 +345,4 @@ export function AgentChatThread({ userId }: AgentChatThreadProps) {
         }
       } else {
         if (recognitionRef.current) {
-          recognitionRef.current.stop();
-          setIsListening(false);
-        }
-      }
-    } catch (error) {
-      console.error('Error toggling speech recognition:', error);
-      if (error instanceof Error && error.name === 'NotAllowedError') {
-        alert('Please allow microphone access to use voice input.');
-      }
-      logUserActivity('voice_input_permission_error', { error: String(error) });
-    }
-  };
-
-  // Form state management
-  const handleTranscriptUpdate = (text: string) => {
-    setTranscriptText(text);
-  };
-
-  // Textarea auto-resize
-  useEffect(() => {
-    if (textareaRef.current) {
-      const textarea = textareaRef.current;
-      textarea.style.height = 'auto';
-      const newHeight = Math.min(textarea.scrollHeight, 120);
-      textarea.style.height = `${newHeight}px`;
-    }
-  }, [watch("content")]);
-
-  // Form submission handler
-  const onSubmit = (data: { content: string }) => {
-    if (data.content.trim()) {
-      sendMessage.mutate(data.content);
-      reset({ content: '' });
-      setTranscriptText('');
-    }
-  };
-
-  // Textarea onChange handler
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    setValue("content", newValue, { shouldValidate: true });
-    setTranscriptText('');
-  };
-
-  const content = watch("content");
-
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  return (
-    <div className="flex flex-col h-[600px]">
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col-reverse">
-        <div className="space-y-4">
-          {messages.length === 0 ? (
-            <div className="flex justify-start">
-              <Card className="max-w-[80%] p-3 bg-muted">
-                How can I help with your home improvement needs today?
-              </Card>
-            </div>
-          ) : Array.isArray(messages) ? (
-            messages.map((message) => {
-              // Check if message exists and has the required properties
-              if (!message || typeof message !== 'object') {
-                console.warn('Invalid message object:', message);
-                return null;
-              }
-              
-              // Safely determine if this is an AI message
-              const isAiMessage = message.isAiAssistant === true || message.fromId === 0;
-              
-              return (
-                <div
-                  key={message.id || `msg-${Date.now()}-${Math.random()}`}
-                  className={`flex ${isAiMessage ? "justify-start" : "justify-end"}`}
-                >
-                  <Card
-                    className={`max-w-[80%] p-3 ${
-                      !isAiMessage
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    }`}
-                  >
-                    {message.content || "No content available"}
-                  </Card>
-                </div>
-              );
-            })
-          ) : (
-            <div className="flex justify-start">
-              <Card className="max-w-[80%] p-3 bg-muted">
-                Error loading messages. Please try again.
-              </Card>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="border-t p-4 flex gap-2"
-      >
-        <div className="flex-1 relative">
-          <Textarea
-            {...register("content")}
-            onChange={handleTextareaChange}
-            placeholder="Ask about home improvement..."
-            className="flex-1 min-h-[40px] max-h-[120px] resize-none text-foreground placeholder:text-muted-foreground"
-            style={{ color: 'inherit' }}
-            disabled={sendMessage.isPending || isSpeaking}
-            readOnly={isSpeaking}
-            value={isSpeaking ? "" : watch("content")}
-            rows={1}
-            ref={textareaRef}
-          />
-        </div>
-        {speechSupported ? (
-          <Button
-            type="button"
-            size="icon"
-            variant={isListening ? "destructive" : "secondary"}
-            onClick={toggleListening}
-            disabled={sendMessage.isPending || isSpeaking}
-            title="Click to start/stop voice input"
-          >
-            {isListening ? (
-              <MicOff className="h-4 w-4" />
-            ) : (
-              <Mic className="h-4 w-4" />
-            )}
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            size="icon"
-            variant="secondary"
-            disabled
-            title="Voice input requires HTTPS or localhost"
-          >
-            <Mic className="h-4 w-4 opacity-50" />
-          </Button>
-        )}
-        <Button
-          type="button"
-          size="icon"
-          variant="secondary"
-          onClick={() => setIsMuted(!isMuted)}
-          disabled={sendMessage.isPending || isSpeaking}
-        >
-          {isMuted ? (
-            <VolumeX className="h-4 w-4" />
-          ) : (
-            <Volume2 className="h-4 w-4" />
-          )}
-        </Button>
-        <Button
-          type="submit"
-          size="icon"
-          disabled={!content || sendMessage.isPending || isSpeaking}
-          title="Send message"
-        >
-          <Send className="h-4 w-4" />
-        </Button>
-      </form>
-    </div>
-  );
-}
+          recognitionRef.
