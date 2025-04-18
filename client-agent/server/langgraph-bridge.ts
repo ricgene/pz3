@@ -3,7 +3,9 @@ import axios, { AxiosError } from 'axios';
 
 // URL where your Python LangGraph service will be exposed
 //const LANGGRAPH_URL = process.env.LANGGRAPH_URL || 'http://localhost:8000/api/agent';
-const LANGGRAPH_URL = 'http://127.0.0.1:2024'
+/const LANGGRAPH_URL = 'http://127.0.0.1:2024'
+// Update this constant to use your LangGraph URL
+const LANGGRAPH_URL = 'https://ht-untimely-hierarchy-43-ebc7d04a69c25cfbaa86079fae117b79.us.langgraph.app';
 
 // URL where your Python LangGraph service is running
 // Use the /project endpoint for LangSmith's local server
@@ -58,61 +60,34 @@ export async function callLangGraphAgent(request: LangGraphRequest): Promise<Lan
     
     console.log("Sending to LangGraph:", JSON.stringify(requestBody, null, 2));
     
-    // Try different approaches to connect to LangGraph
-    
-    // Approach 1: Try connecting to the direct workflow endpoint
+    // Connect directly to the LangGraph app
     try {
-      const directResponse = await axios.post('http://127.0.0.1:8000/api/agent', requestBody, {
+      const directResponse = await axios.post(`${LANGGRAPH_URL}/api/agent`, requestBody, {
         headers: {
           'Content-Type': 'application/json'
         },
         timeout: 15000 // 15 second timeout
       });
       
-      console.log("Received response from direct endpoint:", directResponse.data);
+      console.log("Received response from LangGraph:", directResponse.data);
       
       // If we get a successful response, process it
       if (directResponse.data) {
         return processLangGraphResponse(directResponse.data);
       }
     } catch (error) {
-      // Explicitly type the error
       const directError: unknown = error;
-      console.error("Direct endpoint error:", directError instanceof Error ? directError.message : 'Unknown error');
-      // Continue to next approach
+      console.error("LangGraph error:", directError instanceof Error ? directError.message : 'Unknown error');
+      
+      // Fall through to fallback response
+      console.warn("LangGraph connection failed, using fallback");
+      return getFallbackResponse(request.message);
     }
     
-    // Approach 2: Try connecting to the API run endpoint
-    try {
-      const apiResponse = await axios.post(LANGGRAPH_URL, { 
-        project_name: "prizm-workflow-2",
-        inputs: requestBody
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        timeout: 15000 // 15 second timeout
-      });
-      
-      console.log("Received response from API endpoint:", apiResponse.data);
-      
-      // If we get a successful response, process it
-      if (apiResponse.data && apiResponse.data.outputs) {
-        return processLangGraphResponse(apiResponse.data.outputs);
-      }
-    } catch (error) {
-      // Explicitly type the error
-      const apiError: unknown = error;
-      console.error("API endpoint error:", apiError instanceof Error ? apiError.message : 'Unknown error');
-      // Fall through to mockup response
-    }
-    
-    // If we've tried all approaches and failed, use fallback
-    console.warn("All LangGraph connection attempts failed, using fallback");
+    // If we reach here, something went wrong
     return getFallbackResponse(request.message);
-    
   } catch (error) {
-    // Explicitly type the error as unknown
+    // General error handling
     const err: unknown = error;
     console.error('Error calling LangGraph agent:', err instanceof Error ? err.message : 'Unknown error');
     return getFallbackResponse(request.message);

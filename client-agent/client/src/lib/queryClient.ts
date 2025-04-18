@@ -1,3 +1,4 @@
+// Modified version of queryClient.ts to connect directly to LangSmith
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 // Utility to handle API response errors
@@ -14,31 +15,41 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
-
-// Get the base API URL
+// Get the base API URL - updated to use LangSmith directly
 const getApiBaseUrl = () => {
-  // Use local server for development
-  if (import.meta.env.DEV) {
-    return "http://localhost:3000"; // Your local server
-  }
-  // Use cloud server for production
-  return "https://ai-api-service-324482404818.us-central1.run.app";
+  // Use LangSmith API for both dev and production
+  // Note: You'll need to replace this with your actual LangSmith endpoint
+  return "https://api.smith.langchain.com";
 };
 
-// Function to handle API requests
-// In client/src/lib/queryClient.ts
+// Get the LangSmith API key from environment variables
+const getLangSmithApiKey = () => {
+  return import.meta.env.VITE_LANGSMITH_API_KEY || "";
+};
+
+// Function to handle API requests - updated for LangSmith
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
   const apiUrl = getApiBaseUrl() + url;
+  const apiKey = getLangSmithApiKey();
   
   console.log(`Making ${method} request to ${apiUrl}`);
   
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  
+  // Add API key to headers if available
+  if (apiKey) {
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  }
+  
   const res = await fetch(apiUrl, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: 'omit',
   });
@@ -58,9 +69,19 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     try {
       const apiUrl = getApiBaseUrl() + (queryKey[0] as string);
+      const apiKey = getLangSmithApiKey();
+      
       console.log(`Making query to ${apiUrl}`);
       
+      const headers: Record<string, string> = {};
+      
+      // Add API key to headers if available
+      if (apiKey) {
+        headers["Authorization"] = `Bearer ${apiKey}`;
+      }
+      
       const res = await fetch(apiUrl, {
+        headers,
         credentials: 'omit',
       });
 
