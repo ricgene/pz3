@@ -19,7 +19,7 @@ async function throwIfResNotOk(res: Response) {
 const getApiBaseUrl = () => {
   // Use LangSmith API for both dev and production
   // Note: You'll need to replace this with your actual LangSmith endpoint
-  return "https://api.smith.langchain.com";
+  return import.meta.env.VITE_API_BASE_URL || "";
 };
 
 // Get the LangSmith API key from environment variables

@@ -345,4 +345,15 @@ export function AgentChatThread({ userId }: AgentChatThreadProps) {
         }
       } else {
         if (recognitionRef.current) {
-          recognitionRef.
+          recognitionRef.current.stop(); // Add .stop() to complete the statement
+          setIsListening(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling listening:', error);
+    }
+  };
+}
+
+
+

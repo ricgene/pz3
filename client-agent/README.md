@@ -1,26 +1,36 @@
 README.md
 
-# description react mobile client - v2 prizm
+# React mobile client
 
 
-# 
-cd pz2/client-agent/server
+# local test 
+
+cd pz3/client-agent/server
 npm run build
-
-# test
-npm run dev
-# or 
 npm run server
+# runs on port 3000
 
-#runs on 3000
+cd pz3/client-agent/client
+npm run dev
+# http://localhost:5174/
 
-# ----- client ----
-cd pz2/client-agent/client
- npm run dev
+# what do with lang part:
+   add to lang-pz3/README.md
+   source .venv_py311/bin/activate
+     pip install langgraph-cli
+     pip install -r requirements.txt
+     pip install -U "langgraph-cli[inmem]"
+   langgraph dev
+   deactivate
+   
+   poetry run langgraph dev
+   or other .venv way.
 
-http://localhost:5174/
 
 
 # deploy 
-Make sure the _redirects file exists in your build output: echo "/* /index.html 200" > dist/public/_redirects
-Deploy using: netlify deploy --dir=dist/public --prod
+Make sure the _redirects file exists in your build output: 
+echo "/* /index.html 200" > dist/public/_redirects
+Deploy using: 
+   cd pz3/lient-agent
+   netlify deploy --dir=dist/public --prod
