@@ -345,7 +345,7 @@ export function AgentChatThread({ userId }: AgentChatThreadProps) {
         }
       } else {
         if (recognitionRef.current) {
-          recognitionRef.current.stop(); // Add .stop() to complete the statement
+          recognitionRef.current.stop();
           setIsListening(false);
         }
       }
@@ -353,7 +353,114 @@ export function AgentChatThread({ userId }: AgentChatThreadProps) {
       console.error('Error toggling listening:', error);
     }
   };
+
+  // Auto-resize textarea as user types
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [watch('content')]);
+
+  // Scroll to bottom when messages update
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Form submission handler
+  const onSubmit = (data: { content: string }) => {
+    const content = data.content.trim();
+    if (content) {
+      sendMessage.mutate(content);
+    }
+  };
+
+  // THIS IS THE RETURN STATEMENT THAT WAS MISSING
+  return (
+    <div className="flex flex-col h-[600px]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex ${
+              !message.isAiAssistant ? "justify-end" : "justify-start"
+            }`}
+          >
+            <Card
+              className={`max-w-[80%] p-3 ${
+                !message.isAiAssistant
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted"
+              }`}
+            >
+              {message.content}
+            </Card>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="border-t p-4 flex gap-2"
+      >
+        <div className="flex-1 relative">
+          <Textarea
+            {...register("content")}
+            placeholder="Ask about home improvement..."
+            className="flex-1 min-h-[40px] max-h-[120px] resize-none"
+            disabled={sendMessage.isPending || isSpeaking}
+            ref={textareaRef}
+            rows={1}
+          />
+        </div>
+        {speechSupported ? (
+          <Button
+            type="button"
+            size="icon"
+            variant={isListening ? "destructive" : "secondary"}
+            onClick={toggleListening}
+            disabled={sendMessage.isPending || isSpeaking}
+            title="Click to start/stop voice input"
+          >
+            {isListening ? (
+              <MicOff className="h-4 w-4" />
+            ) : (
+              <Mic className="h-4 w-4" />
+            )}
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            size="icon"
+            variant="secondary"
+            disabled
+            title="Voice input requires HTTPS or localhost"
+          >
+            <Mic className="h-4 w-4 opacity-50" />
+          </Button>
+        )}
+        <Button
+          type="button"
+          size="icon"
+          variant="secondary"
+          onClick={() => setIsMuted(!isMuted)}
+          title={isMuted ? "Unmute" : "Mute"}
+        >
+          {isMuted ? (
+            <VolumeX className="h-4 w-4" />
+          ) : (
+            <Volume2 className="h-4 w-4" />
+          )}
+        </Button>
+        <Button
+          type="submit"
+          size="icon"
+          disabled={!watch('content') || sendMessage.isPending || isSpeaking}
+          title="Send message"
+        >
+          <Send className="h-4 w-4" />
+        </Button>
+      </form>
+    </div>
+  );
 }
-
-
-
