@@ -375,6 +375,18 @@ export function AgentChatThread({ userId }: AgentChatThreadProps) {
     }
   };
 
+  // Handle text input changes
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue('content', e.target.value);
+  };
+  
+  // Debug log for form state
+  const content = watch('content');
+  console.log("Current form state - content:", content);
+  console.log("Is speaking:", isSpeaking);
+  console.log("Is pending:", sendMessage.isPending);
+  console.log("Should button be disabled:", !content || sendMessage.isPending || isSpeaking);
+
   // THIS IS THE RETURN STATEMENT THAT WAS MISSING
   return (
     <div className="flex flex-col h-[600px]">
@@ -405,12 +417,13 @@ export function AgentChatThread({ userId }: AgentChatThreadProps) {
       >
         <div className="flex-1 relative">
           <Textarea
-            {...register("content")}
             placeholder="Ask about home improvement..."
             className="flex-1 min-h-[40px] max-h-[120px] resize-none"
             disabled={sendMessage.isPending || isSpeaking}
             ref={textareaRef}
             rows={1}
+            value={content}
+            onChange={handleTextChange}
           />
         </div>
         {speechSupported ? (
@@ -455,7 +468,7 @@ export function AgentChatThread({ userId }: AgentChatThreadProps) {
         <Button
           type="submit"
           size="icon"
-          disabled={!watch('content') || sendMessage.isPending || isSpeaking}
+          disabled={!content || sendMessage.isPending || isSpeaking}
           title="Send message"
         >
           <Send className="h-4 w-4" />
