@@ -8,7 +8,8 @@
     "build": "vite build",
     "start": "vite preview",
     "check": "tsc",
-    "server": "tsx server/index.ts"
+    "server": "tsx server/index.ts",
+    "test:e2e": "ts-node test-memory-e2e.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.3",

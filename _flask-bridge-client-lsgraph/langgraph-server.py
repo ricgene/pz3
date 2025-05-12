@@ -81,14 +81,24 @@ def mock_response(data):
     message = data.get("task", {}).get("description", "")
     message = message.lower() if isinstance(message, str) else ""
     
-    if "hello" in message or "hi" in message:
-        response = "Hello! I'm your AI assistant. How can I help you with your home improvement needs today?"
+    # Get user name from memory context if available
+    user_name = data.get("memory", {}).get("user_name", "unknown")
+    is_first_message = data.get("memory", {}).get("is_first_message", False)
+    
+    # Use 007 persona for all responses
+    if is_first_message:
+        if user_name == "unknown":
+            response = "Hello! I'm 007, your personal productivity agent. I don't think we've met before. What's your name?"
+        else:
+            response = f"Hello {user_name}! I'm 007, your personal productivity agent. How can I help you today?"
+    elif "hello" in message or "hi" in message:
+        response = f"Hello {user_name}! I'm 007, your personal productivity agent. How can I help you today?"
     elif "faucet" in message or "leak" in message:
-        response = "I see you need help with a faucet repair. Leaky faucets are common issues that can waste water and increase your utility bills. Most faucet repairs involve replacing worn washers, O-rings, or cartridges. Would you like me to recommend a licensed plumber in your area, or are you interested in DIY instructions?"
+        response = "I see you need help with a faucet repair. As your productivity agent, I can help you find a licensed plumber in your area or provide DIY instructions. What would you prefer?"
     elif "kitchen" in message or "renovation" in message:
-        response = "Kitchen renovations are significant projects that can add value to your home. Based on industry data, the average kitchen renovation costs between $25,000 and $40,000, though smaller projects might be $10,000-$15,000. Would you like me to help you break down the potential costs for your specific kitchen project?"
+        response = "Kitchen renovations are significant projects that can add value to your home. As your productivity agent, I can help you break down the potential costs for your specific kitchen project. What's your budget range?"
     else:
-        response = f"I understand you're interested in your project. Can you tell me more about what you're trying to achieve?"
+        response = f"I understand you're interested in your project. As your productivity agent, I'm here to help. Can you tell me more about what you're trying to achieve?"
     
     # Format response to match workflow output structure
     return jsonify({

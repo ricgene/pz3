@@ -4,6 +4,8 @@ import { createServer } from 'http';
 import { setupWebSocketServer } from './websocket';
 import { handleAgentChat } from './agent-webhook';
 import cors from 'cors';
+import { LangGraphBridge } from './langgraph-bridge';
+import { MemoryService } from './memory-service';
 
 const app = express();
 const httpServer = createServer(app);
@@ -25,38 +27,22 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+const langGraphBridge = new LangGraphBridge(wss);
+const memoryService = new MemoryService(wss);
+
 // Original chat endpoint (keep for backward compatibility)
 app.post('/api/chat', async (req, res) => {
   try {
     const { userId, message } = req.body;
     
-    // Create user message
-    const userMessage = {
-      id: Date.now(),
-      fromId: userId,
-      toId: 0, // AI assistant ID
-      content: message,
-      timestamp: new Date(),
-      isAiAssistant: false
-    };
+    if (!userId || !message) {
+      return res.status(400).json({ error: 'userId and message are required' });
+    }
 
-    // Create AI response
-    const aiMessage = {
-      id: Date.now() + 1,
-      fromId: 0, // AI assistant ID
-      toId: userId,
-      content: `I received your message: "${message}". I'm here to help!`,
-      timestamp: new Date(),
-      isAiAssistant: true
-    };
-
-    // Return both messages
-    res.json({
-      userMessage,
-      assistantMessage: aiMessage
-    });
+    const response = await langGraphBridge.processMessage(userId, message);
+    res.json({ response });
   } catch (error) {
-    console.error('Error in chat endpoint:', error);
+    console.error('Error processing chat request:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -64,8 +50,23 @@ app.post('/api/chat', async (req, res) => {
 // New Agent powered chat endpoint
 app.post('/api/agent-chat', handleAgentChat);
 
+// Memory check endpoint
+app.get('/api/memory/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const memoryData = await memoryService.loadMemory(userId);
+    if (!memoryData) {
+      return res.status(404).json({ error: 'Memory not found' });
+    }
+    res.json(memoryData);
+  } catch (error) {
+    console.error('Error retrieving memory:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
