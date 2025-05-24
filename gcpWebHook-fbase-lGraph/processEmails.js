@@ -1,4 +1,7 @@
 /*
+
+This will now be Make to GCP and then to Firebase and then langgraph.
+
 {
 "Task":"tn"
 "State":"GA"
@@ -17,13 +20,12 @@
 
 */
 
-function callWebhook(parsedData) {
+function callWebhook(jsonPayload) {
   // Your GCP webhook URL
   var webhookUrl = 'https://us-central1-prizmpoc.cloudfunctions.net/processEmailAndStoreInFirebase';
  
-  // Log the exact JSON string we're sending for debugging
-  var jsonPayload = JSON.stringify(parsedData);
-  Logger.log("Sending JSON payload: " + jsonPayload);
+  // Log the payload for debugging
+  Logger.log("Sending payload: " + JSON.stringify(jsonPayload));
   
   var options = {
     'method': 'post',
@@ -44,12 +46,12 @@ function callWebhook(parsedData) {
     Logger.log('Response: ' + response.getContentText());
    
     // Create a log entry in Google Sheets (optional)
-    //logToSheet(JSON.stringify(parsedData), response.getContentText(), response.getResponseCode());
+    //logToSheet(JSON.stringify(jsonPayload), response.getContentText(), response.getResponseCode());
    
   } catch (error) {
     Logger.log('Error: ' + error.toString());
    
     // Log errors too
-    //logToSheet(JSON.stringify(parsedData), error.toString(), 500);
+    //logToSheet(JSON.stringify(jsonPayload), error.toString(), 500);
   }
 }
