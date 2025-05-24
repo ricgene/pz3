@@ -1,5 +1,21 @@
 
 
+Marcus 4/7
+   - brief project update
+     - end to end
+       - spec
+          - business plan
+          - overall operation
+             - what needed for demo
+             - question - how deep in tree
+             - how does $ change hands?  automate?  or later
+       - function
+       - assets - and share
+     - by 4 components
+     - tooling / process
+   - going fwd
+     - schedule
+     - view on investor process
 
 
 
@@ -140,3 +156,56 @@ State: GA
 README.md - injest
    - script.google.com gmailtoagent processEmails()
 
+4/7
+------
+  - Goals
+    - by 3 pm ish
+        - project spec pass 1 - done
+        - put this all into claude-project - update
+    - post 3 pm
+        - in agent:
+           - select which initial agent to keep and test
+           - store something and practice getting it
+
+        - fix fb refresh token
+        - begin schema work - step by step with c-proj
+4/6/25
+------
+added hello-graph project to claude
+   - 
+
+Did work with claude code - see prizm notes.
+
+Goals remaining part of the day:
+   - re-read directions on what tools for what.
+   - test each component independently.
+       - select agentLp1 equiv of helloLangStudio equiv
+   - see how claude project is working
+
+   - try an integration with claude code
+
+All in new repo pz2
+consolidated .gitignore - y
+pushed - y
+                                                       spec   moved   readme  tested  creds:saved,documented
+client -                                                 y      y       y       y       ?
+  graph-agent from agentLp1                              y      y       n       n       ?
+  - py?
+  hello-graph  from helloLangStudio keep!!!              y      y       n       n       ?
+  - py?
+server. ~/gitl/gcp-agent-injest-task (no, see below)     y      y       y       n       ?
+touch-user (gitlgcp-agent-email2user)                    y      y       n       n       ?
+admin-agent                                              y      n       n       n       n
+
+
+known issues / to-dos / questions:
+  server: 
+    - expiring refresh token gcp - firebase I believe.
+    - is firebase-admin-creds.json needed?
+      -  don't think so
+    - need test-deployment/ from AIagent1_server
+  graph
+    - graph-agent/.langgraph_api into git?
+    - save repo / testing - helloLangStudio
+  client
+    - need timeout when internet down for user msg
