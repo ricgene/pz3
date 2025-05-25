@@ -8,7 +8,7 @@ admin.initializeApp();
 // Initialize Firestore
 const db = admin.firestore();
 
-exports.processEmailAndStoreInFirebase = functions.https.onRequest((req, res) => {
+exports.processEmailAndStoreInFirebase2 = functions.https.onRequest((req, res) => {
   // Enable CORS
   return cors(req, res, async () => {
     // Verify API key
@@ -28,6 +28,8 @@ exports.processEmailAndStoreInFirebase = functions.https.onRequest((req, res) =>
         return;
       }
 
+      const now = new Date();
+
       // Create a task document
       const taskData = {
         task: payload.Task,
@@ -43,8 +45,8 @@ exports.processEmailAndStoreInFirebase = functions.https.onRequest((req, res) =>
         address: payload["Full Address"],
         customerName: payload["Customer Name"],
         status: 'new',
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        createdAt: now,
+        updatedAt: now
       };
 
       // Store in Firestore

@@ -1,6 +1,6 @@
 # Firebase Function Testing Guide
 
-This document outlines the process for testing the `processEmailAndStoreInFirebase` Firebase Function locally.
+This document outlines the process for testing the `processEmailAndStoreInFirebase2` Firebase Function locally.
 
 ## Prerequisites
 
@@ -51,7 +51,7 @@ This document outlines the process for testing the `processEmailAndStoreInFireba
 You can test the function using curl with the following command:
 
 ```bash
-curl -X POST "http://127.0.0.1:5001/prizmpoc/us-central1/processEmailAndStoreInFirebase" \
+curl -X POST "http://127.0.0.1:5001/prizmpoc/us-central1/processEmailAndStoreInFirebase2" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: dG7..." \
   -d '{

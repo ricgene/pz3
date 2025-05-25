@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "node test-local.js": "prizmpoc"
+  },
+  "targets": {},
+  "etags": {}
+}
