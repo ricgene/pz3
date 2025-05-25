@@ -2,6 +2,10 @@ README.md
 
 # React mobile client
 
+remember that this is in part version 2, and before changes ~ 5/24/25, I expect that worked...
+
+Will hack to work without the react part for now - don't delete anything that may be useful later.
+
 
 # local test 
 
